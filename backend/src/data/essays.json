@@ -1,0 +1,15 @@
+[
+  {
+    "essay_id": "E001",
+    "text": "Full essay text here...",
+    "college_accepted": "Harvard",
+    "essay_type": "Personal Statement",
+    "word_count": 512,
+    "annotations": {
+      "readability_score": 8.2,
+      "tone": "Reflective",
+      "themes": ["Overcoming Adversity", "Personal Growth"],
+      "quality_score": 8
+    }
+  }
+]
