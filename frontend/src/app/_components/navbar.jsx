@@ -19,7 +19,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 w-full bg-color-a shadow-md z-50">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center h-16">
-          {/* Logo and Company Name */}
+          {/* Logo and Company Name  */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-3">
               <Image
