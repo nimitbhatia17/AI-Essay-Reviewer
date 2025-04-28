@@ -1,4 +1,17 @@
-# # src/models/essay_analyzer.py
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="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"
+)
+
+response = client.responses.create(
+    model="gpt-4.1",
+    input="Write a one-sentence bedtime story about a unicorn."
+)
+
+print(response.output_text)
+
+
 # import spacy
 # from sentence_transformers import SentenceTransformer
 # import json
