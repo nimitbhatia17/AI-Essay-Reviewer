@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 
-export default async function PromptForm() {
+export default function PromptForm() {
   const colleges = ["Harvard", "Stanford", "MIT", "Yale", "Princeton"];
 
   const [file, setFile] = useState(null);
