@@ -5,7 +5,7 @@ import json
 router = APIRouter()
 
 df = pd.read_csv(
-    "/Users/nimitbhatia/Projects/EssayReview/backend/src/data/deep_essays_dataset.csv")
+    "src/data/deep_essays_dataset.csv")
 
 
 @router.get("/colleges")
