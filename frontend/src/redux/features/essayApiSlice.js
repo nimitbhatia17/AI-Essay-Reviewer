@@ -9,7 +9,10 @@ const essayApiSlice = apiSlice.injectEndpoints({
         body: { query },
       }),
     }),
+    getEssayById: builder.query({
+      query: (id) => `/essay/get?id=${id}`,
+    }),
   }),
 });
 
-export const { useEssaySearchMutation } = essayApiSlice;
+export const { useEssaySearchMutation, useGetEssayByIdQuery } = essayApiSlice;
