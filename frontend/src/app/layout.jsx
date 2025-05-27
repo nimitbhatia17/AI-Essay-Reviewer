@@ -1,4 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import CustomProvider from "@/redux/provider";
+import Navbar from "@/app/components/common/Navbar";
+import { Setup } from "@/app/components/utils";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,7 +26,11 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-blue`}
       >
-        {children}
+        <CustomProvider>
+          <Setup />
+          <Navbar />
+          {children}
+        </CustomProvider>
       </body>
     </html>
   );

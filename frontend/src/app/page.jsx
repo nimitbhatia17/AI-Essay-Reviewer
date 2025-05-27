@@ -1,12 +1,11 @@
 "use client";
 
-import Navbar from "./_components/navbar";
-import PromptForm from "./_components/promptform";
+import Navbar from "./components/common/Navbar";
+import PromptForm from "./components/common/promptform";
 
 export default function Home() {
   return (
     <>
-      <Navbar />
       <PromptForm />
     </>
   );

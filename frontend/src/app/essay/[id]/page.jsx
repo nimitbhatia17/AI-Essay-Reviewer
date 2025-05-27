@@ -1,6 +1,6 @@
 "use client";
 
-import Navbar from "@/app/_components/navbar";
+import Navbar from "@/app/components/common/navbar";
 import { useState, useEffect, use } from "react";
 
 export default function EssayDetail({ params }) {
@@ -9,7 +9,9 @@ export default function EssayDetail({ params }) {
 
   useEffect(() => {
     const fetchEssay = async () => {
-      const response = await fetch(`http://localhost:8000/api/essay?id=${id}`);
+      const response = await fetch(`http://localhost:8000/api/essay?id=${id}`, {
+        signal: AbortSignal.timeout(300000),
+      });
       const essay = await response.json();
       console.log(essay);
       setEssay(essay);
@@ -20,7 +22,6 @@ export default function EssayDetail({ params }) {
 
   return (
     <div className="min-h-screen bg-color-e pt-20">
-      <Navbar />
       <section className="max-w-4xl mx-auto p-4 sm:px-6 lg:px-8 py-10">
         <h1 className="text-4xl font-light text-color-c mb-4">
           {essay[0]?.essay_title}
