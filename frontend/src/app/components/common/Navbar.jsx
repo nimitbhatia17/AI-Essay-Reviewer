@@ -52,13 +52,13 @@ export default function Navbar() {
             {isAuthenticated ? (
               <div className="flex items-center">
                 <Link href={"/chat"}>
-                  <div className="bg-black w-35 text-center hover:bg-gray-100 hover:border-1 hover:border-black hover:text-black text-white font-sans font-extrabold py-4 px-4 mx-3">
+                  <div className="bg-black w-35 text-center hover:bg-gray-100 hover:border-1 hover:border-black hover:text-black text-white font-sans font-extrabold py-4 px-4 mx-3 transition duration-400">
                     CHAT
                   </div>
                 </Link>
 
                 <Link href={"/"} onClick={handleLogout}>
-                  <div className="bg-black w-35 text-center hover:bg-gray-100 hover:border-1 hover:border-black hover:text-black text-white font-sans font-extrabold py-4 px-4 mx-3">
+                  <div className="bg-black w-35 text-center hover:bg-gray-100 hover:border-1 hover:border-black hover:text-black text-white font-sans font-extrabold py-4 px-4 mx-3 transition duration-400">
                     LOGOUT
                   </div>
                 </Link>
@@ -67,14 +67,14 @@ export default function Navbar() {
               <div className="flex items-center">
                 <Link href={"/auth/login"}>
                   {" "}
-                  <div className="bg-black w-35 text-center hover:bg-gray-100 hover:border-1 hover:border-black hover:text-black text-white font-sans font-extrabold py-4 px-4 mx-3">
+                  <div className="bg-black w-35 text-center hover:bg-gray-100 hover:border-1 hover:border-black hover:text-black text-white font-sans font-extrabold py-4 px-4 mx-3 transition duration-400">
                     LOGIN
                   </div>
                 </Link>
 
                 <Link href={"/auth/register"}>
                   {" "}
-                  <div className="bg-black w-35 text-center hover:bg-gray-100 hover:border-1 hover:border-black hover:text-black text-white font-sans font-extrabold py-4 px-4 mx-3">
+                  <div className="bg-black w-35 text-center hover:bg-gray-100 hover:border-1 hover:border-black hover:text-black text-white font-sans font-extrabold py-4 px-4 mx-3 transition duration-400">
                     REGISTER
                   </div>
                 </Link>

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useEssaySearchMutation } from "@/redux/features/essayApiSlice";
-import EssayCard from "@/app/components/common/EssayCard";
+import { EssayCard } from "@/app/components/common";
 
 export default function Page({ params }) {
   const [essaySearch] = useEssaySearchMutation();
