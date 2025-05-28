@@ -25,9 +25,9 @@ export default function Page({ params }) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-color-e px-40">
-      <div className="flex flex-col items-center justify-center pt-40">
-        <h1 className="text-4xl font-light mb-10 text-color-c">
+    <div className="min-h-screen px-40">
+      <div className="flex flex-col items-center justify-center pt-20">
+        <h1 className="text-4xl font-bold mb-10 text-color-gray-900">
           Search Results
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">

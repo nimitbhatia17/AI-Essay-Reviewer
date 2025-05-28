@@ -22,7 +22,7 @@ class SearchBasedOnTags(APIView):
 class GetEssayBasedOnId(APIView):
     def get(self, request, *args, **kwargs):
         id = request.GET.get("id", None).strip()
-        print(id)
+
         if not id:
             return Response({"error": "Id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
         filtered_essay = Essay.objects.filter(pk__exact=id)

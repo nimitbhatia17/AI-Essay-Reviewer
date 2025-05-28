@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { setAuth } from "@/redux/features/authSlice";
+import { setAuth, setUser } from "@/redux/features/authSlice";
 import { useLoginMutation } from "@/redux/features/authApiSlice";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -28,6 +28,7 @@ export default function useRegister() {
       .unwrap()
       .then(() => {
         dispatch(setAuth());
+        dispatch(setUser(email));
         toast.success("User Logged In Successfully. Redirecting to home page.");
         router.push("/");
       })

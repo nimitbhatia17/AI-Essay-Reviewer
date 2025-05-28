@@ -5,13 +5,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout as setLogout } from "@/redux/features/authSlice";
 import { useLogoutMutation } from "@/redux/features/authApiSlice";
 import Link from "next/link";
-import Image from "next/image";
 import EssaySearchForm from "../forms/EssaySearchForm";
+import { toast } from "react-toastify";
 
 export default function Navbar() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, userId } = useSelector((state) => state.auth);
   const [logout] = useLogoutMutation();
 
   const handleLogout = () => {
@@ -19,6 +19,7 @@ export default function Navbar() {
       .unwrap()
       .then(() => {
         dispatch(setLogout());
+        toast.success("User Logged out successfully!");
       })
       .finally(() => {
         router.push("/");
@@ -26,35 +27,59 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="top-0 left-0 w-full bg-color-a shadow-md z-50">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center h-16">
+    <nav className="top-0 left-0 w-full bg-color-white shadow-md z-50">
+      <div className="max-w-8xl px-30">
+        <div className="flex justify-between items-center h-30">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-3">
-              <Image
-                src="/logo.png"
-                alt="AI Essay Reviewer Logo"
-                width={25}
-                height={25}
-                className="object-contain"
-              />
-              <span className="text-xl font-medium font-arial text-gray-800">
-                AI Essay Reviewer
+            <Link href="/" className="flex flex-col items-end">
+              <span className="text-5xl font-sans text-gray-900">
+                <strong className="font-extrabold">MBA</strong>{" "}
+                <span className="">ASSISTANT</span>
+              </span>
+              <span className="flex text-sm font-sans text-gray-900">
+                <strong className="text-sm font-sans font-extrabold text-gray-900">
+                  by ADMISSIONS
+                </strong>{" "}
+                <span className="text-sm font-sans text-gray-900">
+                  &nbsp;GATEWAY
+                </span>
               </span>
             </Link>
           </div>
-          <div className="flex-1 max-w-md mx-6">
-            <EssaySearchForm />
-          </div>
 
-          {isAuthenticated ? "LOGGED IN" : "NOT LOGGED IN"}
-          <div className="hidden sm:flex items-center space-x-4">
-            <Link
-              href="/upload"
-              className="text-gray-600 hover:text-blue-500 hidden"
-            >
-              Upload Essay
-            </Link>
+          <EssaySearchForm />
+          <div>
+            {isAuthenticated ? (
+              <div className="flex items-center">
+                <Link href={"/chat"}>
+                  <div className="bg-black w-35 text-center hover:bg-gray-100 hover:border-1 hover:border-black hover:text-black text-white font-sans font-extrabold py-4 px-4 mx-3">
+                    CHAT
+                  </div>
+                </Link>
+
+                <Link href={"/"} onClick={handleLogout}>
+                  <div className="bg-black w-35 text-center hover:bg-gray-100 hover:border-1 hover:border-black hover:text-black text-white font-sans font-extrabold py-4 px-4 mx-3">
+                    LOGOUT
+                  </div>
+                </Link>
+              </div>
+            ) : (
+              <div className="flex items-center">
+                <Link href={"/auth/login"}>
+                  {" "}
+                  <div className="bg-black w-35 text-center hover:bg-gray-100 hover:border-1 hover:border-black hover:text-black text-white font-sans font-extrabold py-4 px-4 mx-3">
+                    LOGIN
+                  </div>
+                </Link>
+
+                <Link href={"/auth/register"}>
+                  {" "}
+                  <div className="bg-black w-35 text-center hover:bg-gray-100 hover:border-1 hover:border-black hover:text-black text-white font-sans font-extrabold py-4 px-4 mx-3">
+                    REGISTER
+                  </div>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

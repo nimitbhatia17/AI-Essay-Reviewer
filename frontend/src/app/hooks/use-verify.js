@@ -8,10 +8,10 @@ export default function useVerify() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    verify(undefined)
+    verify()
       .unwrap()
-      .then((data) => {
-        dispatch(setAuth(data));
+      .then(() => {
+        dispatch(setAuth());
       })
       .finally(() => {
         dispatch(finishInitialLoad());
