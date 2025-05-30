@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 export default function Navbar() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { isAuthenticated, userId } = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const [logout] = useLogoutMutation();
 
   const handleLogout = () => {

@@ -1,5 +1,6 @@
 import { HiPlus, HiTrash, HiX } from "react-icons/hi";
 import { HiChatBubbleLeftRight } from "react-icons/hi2";
+import moment from "moment/moment";
 
 export default function ChatSidebar({
   isOpen,
@@ -48,38 +49,41 @@ export default function ChatSidebar({
                         scrollbar-track-transparent hover:scrollbar-thumb-gray-500"
           >
             <div className="px-4 pb-4 space-y-2">
-              {conversations.map((conversation) => (
+              {conversations?.map((conversation) => (
                 <div
-                  key={conversation.id}
+                  key={conversation?.pk}
                   className={`
                     group flex items-center gap-3 p-3 cursor-pointer 
                     transition-all duration-200 hover:bg-gray-500 font-sans font-light
                     ${
-                      activeConversation === conversation.id
+                      activeConversation === conversation?.pk
                         ? "bg-gray-700 border-l-4 border-gray-200"
                         : "hover:bg-gray-700"
                     }
                   `}
-                  onClick={() => onSelectConversation(conversation.id)}
+                  onClick={() => onSelectConversation(conversation?.pk)}
                 >
                   <HiChatBubbleLeftRight
+                    key={conversations?.pk}
                     size={18}
                     className="text-gray-400 flex-shrink-0"
                   />
 
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-gray-200 truncate">
-                      {conversation.title}
+                      {conversation?.fields?.title}
                     </p>
                     <p className="text-xs text-gray-400 mt-1">
-                      {conversation.timestamp}
+                      {moment(
+                        new Date(conversation?.fields?.updated_at)
+                      ).fromNow()}
                     </p>
                   </div>
 
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onDeleteConversation(conversation.id);
+                      onDeleteConversation(conversation?.pk);
                     }}
                     className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-600 
                              rounded transition-all duration-200 flex-shrink-0"

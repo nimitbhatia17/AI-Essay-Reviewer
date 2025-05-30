@@ -17,10 +17,10 @@ export default function Page() {
       <section className="max-w-4xl mx-auto p-4 sm:px-6 lg:px-8 py-10">
         <h1 className="text-4xl font-bold mb-4">{essay?.fields?.title}</h1>
         <div className="font-extrabold text-s text-color-gray-900">
-          <p>Harvard</p>
+          <p>{essay?.fields?.description}</p>
         </div>
         <div className="mt-4 text-justify">
-          {essay?.fields?.essay?.split(/\n/).map((line) => (
+          {essay?.fields?.essay?.split("/\n/").map((line) => (
             <div className="pt-1 font-light" key={line}>
               {line}
             </div>
