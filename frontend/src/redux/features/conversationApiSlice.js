@@ -13,6 +13,13 @@ const conversationApiSlice = apiSlice.injectEndpoints({
       query: (user) =>
         `/conversation/get-user-conversations?user=${encodeURIComponent(user)}`,
     }),
+    deleteConversation: builder.mutation({
+      query: (conversation_id) => ({
+        url: "/conversation/delete-conversation/",
+        method: "POST",
+        body: { conversation_id },
+      }),
+    }),
   }),
 });
 
