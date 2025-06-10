@@ -6,40 +6,51 @@ import { ChatSidebar as Sidebar, ChatArea } from "@/app/components/common";
 import {
   useGetConversationsByUserQuery,
   useCreateNewConversationMutation,
+  useDeleteConversationMutation,
 } from "@/redux/features/conversationApiSlice";
+import { toast } from "react-toastify";
 
 export default function Page() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { userId } = useSelector((state) => state.auth);
+  const { userId: user } = useSelector((state) => state.auth);
   const {
     data: conversations,
+    refetch,
     isLoading,
     isFetching,
     isError,
-  } = useGetConversationsByUserQuery(userId);
+  } = useGetConversationsByUserQuery(user);
+  const [deleteConversation] = useDeleteConversationMutation();
   const [createNewConversation] = useCreateNewConversationMutation();
 
-  const [activeConversation, setActiveConversation] = useState(1);
+  const [activeConversation, setActiveConversation] = useState(
+    conversations ? conversations[0].fields?.pk : null
+  );
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
   const createNewChat = () => {
-    createNewConversation(userId)
+    createNewConversation(user)
       .unwrap()
       .then((result) => {
-        conversations = [...conversations, result];
+        refetch();
         setActiveConversation(result?.pk);
       });
   };
 
-  const deleteConversation = (id) => {
-    // setConversations(conversations.filter((c) => c.id !== id));
-    // if (activeConversation === id && conversations.length > 1) {
-    //   const remaining = conversations.filter((c) => c.id !== id);
-    //   setActiveConversation(remaining[0]?.id);
-    // }
+  const deleteAConversation = (conversation_id) => {
+    deleteConversation(conversation_id)
+      .unwrap()
+      .then(() => {
+        toast.success("Conversation Deleted Successully!");
+        refetch();
+      })
+      .catch(() => {
+        toast.error("Failed Delete");
+      });
+    setActiveConversation(conversations ? conversations[0].fields?.pk : null);
   };
 
   return (
@@ -51,11 +62,12 @@ export default function Page() {
         activeConversation={activeConversation}
         onSelectConversation={setActiveConversation}
         onNewChat={createNewChat}
-        onDeleteConversation={deleteConversation}
+        onDeleteConversation={deleteAConversation}
       />
 
       <div className="flex-1 flex flex-col min-w-0">
         <ChatArea
+          user={user}
           onToggleSidebar={toggleSidebar}
           activeConversation={activeConversation}
         />

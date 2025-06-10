@@ -9,8 +9,8 @@ const chatApiSlice = apiSlice.injectEndpoints({
         )}`,
     }),
     insertChat: builder.mutation({
-      query: (conversation_id, prompt) => ({
-        url: "/chat/insert-conversation/",
+      query: ({ conversation_id, prompt }) => ({
+        url: "/chat/insert-chat/",
         method: "POST",
         body: { conversation_id, prompt },
       }),

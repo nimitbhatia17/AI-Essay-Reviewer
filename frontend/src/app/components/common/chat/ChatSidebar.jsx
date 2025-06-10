@@ -82,7 +82,7 @@ export default function ChatSidebar({
 
                   <button
                     onClick={(e) => {
-                      e.stopPropagation();
+                      e.preventDefault();
                       onDeleteConversation(conversation?.pk);
                     }}
                     className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-600 

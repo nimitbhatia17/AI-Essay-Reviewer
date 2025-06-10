@@ -26,4 +26,5 @@ const conversationApiSlice = apiSlice.injectEndpoints({
 export const {
   useCreateNewConversationMutation,
   useGetConversationsByUserQuery,
+  useDeleteConversationMutation,
 } = conversationApiSlice;

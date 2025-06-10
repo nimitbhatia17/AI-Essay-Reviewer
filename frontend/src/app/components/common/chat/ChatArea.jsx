@@ -1,21 +1,21 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import {
+  useGetChatsByConversationQuery,
+  useInsertChatMutation,
+} from "@/redux/features/chatApiSlice";
 import { HiOutlineBars3, HiPaperAirplane, HiStop } from "react-icons/hi2";
 import { HiUser } from "react-icons/hi";
 import { RiRobot2Line } from "react-icons/ri";
+import { toast } from "react-toastify";
 
 export default function ChatArea({ onToggleSidebar, activeConversation }) {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      type: "assistant",
-      content: "Hello! I'm your AI assistant. How can I help you today?",
-      timestamp: new Date().toISOString(),
-    },
-  ]);
+  const { data: messages, refetch } =
+    useGetChatsByConversationQuery(activeConversation);
+  const [insertChat, { isLoading: isTyping }] = useInsertChatMutation();
   const [inputValue, setInputValue] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [userMessage, setUserMessage] = useState({});
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -27,9 +27,12 @@ export default function ChatArea({ onToggleSidebar, activeConversation }) {
     scrollToBottom();
   }, [messages]);
 
-  const handleSubmit = async (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
     if (!inputValue.trim() || isTyping) return;
+
+    const conversation_id = activeConversation;
+    const prompt = inputValue.trim();
 
     const userMessage = {
       id: Date.now(),
@@ -38,22 +41,13 @@ export default function ChatArea({ onToggleSidebar, activeConversation }) {
       timestamp: new Date().toISOString(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    setUserMessage(userMessage);
     setInputValue("");
-    setIsTyping(true);
-
-    // Simulate AI response
-    setTimeout(() => {
-      const assistantMessage = {
-        id: Date.now() + 1,
-        type: "assistant",
-        content: `I understand you're asking about "${userMessage.content}". This is a simulated response. In a real implementation, this would be connected to an AI service like OpenAI's API, Anthropic's Claude API, or another language model service.`,
-        timestamp: new Date().toISOString(),
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
-      setIsTyping(false);
-    }, 1500);
-  };
+    insertChat({ conversation_id, prompt })
+      .unwrap()
+      .then(() => refetch())
+      .catch(() => toast.error("failed to connect to AI"));
+  }
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -100,14 +94,14 @@ export default function ChatArea({ onToggleSidebar, activeConversation }) {
                       scrollbar-track-transparent hover:scrollbar-thumb-gray-500"
         >
           <div className="max-w-4xl mx-auto p-4 space-y-6">
-            {messages.map((message) => (
+            {messages?.map((message) => (
               <div
-                key={message.id}
+                key={message.pk}
                 className={`flex gap-4 ${
-                  message.type === "user" ? "justify-end" : "justify-start"
+                  message.fields?.is_ai ? "justify-start" : "justify-end"
                 }`}
               >
-                {message.type === "assistant" && (
+                {message.fields?.is_ai && (
                   <div className="flex-shrink-0 w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
                     <RiRobot2Line size={18} className="text-gray-100" />
                   </div>
@@ -117,30 +111,28 @@ export default function ChatArea({ onToggleSidebar, activeConversation }) {
                   className={`
                   max-w-3xl px-4 py-3 rounded-lg
                   ${
-                    message.type === "user"
+                    !message.fields?.is_ai
                       ? "bg-gray-100 text-gray-900 rounded-br-xs"
                       : "bg-gray-900 text-gray-100 rounded-bl-xs"
                   }
                 `}
                 >
                   <p className="whitespace-pre-wrap break-words">
-                    {message.content}
+                    {message.fields?.text}
                   </p>
                   <div
                     className={`
                     text-xs mt-2 opacity-70
                     ${
-                      message.type === "user"
-                        ? "text-gray-700"
-                        : "text-gray-300"
+                      !message.fields?.is_ai ? "text-gray-700" : "text-gray-300"
                     }
                   `}
                   >
-                    {new Date(message.timestamp).toLocaleTimeString()}
+                    {new Date(message.fields?.created_at).toLocaleTimeString()}
                   </div>
                 </div>
 
-                {message.type === "user" && (
+                {!message.fields?.is_ai && (
                   <div className="flex-shrink-0 w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
                     <HiUser size={18} className="text-gray-100" />
                   </div>
