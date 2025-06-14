@@ -14,17 +14,11 @@ export default function ChatSidebar({
   return (
     <>
       <div
-        className={`
-        fixed lg:relative top-0 left-0 h-full border-r bg-gray-900 border-gray-700
-        transform transition-transform duration-300 ease-in-out z-50
-        ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-        w-80 lg:w-80 flex flex-col
-      `}
+        className={`fixed lg:relative top-0 left-0 h-full bg-gray-100 transform transition-transform duration-300 ease-in-out z-50 ${
+          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        } w-100 flex flex-col`}
       >
-        <div className="flex items-center justify-between p-5 border-b border-gray-700">
-          <h2 className="text-sm font-extrabold font-sans text-gray-200">
-            RECENT CONVERSATIONS
-          </h2>
+        <div className="flex items-center justify-between border-gray-700">
           <button
             onClick={onToggle}
             className="lg:hidden p-2 hover:bg-gray-700 rounded-lg transition-colors"
@@ -33,47 +27,44 @@ export default function ChatSidebar({
           </button>
         </div>
 
-        <div className="p-4">
+        <div className="p-4 border-b-2 border-gray-300">
           <button
             onClick={onNewChat}
-            className="w-full flex items-center gap-3 px-4 py-3 bg-gray-800 hover:bg-gray-500 transition-colors duration-200 text-left font-sans"
+            className="w-full flex items-center gap-2 px-4 py-3 hover:bg-gray-200 transition-colors duration-600 text-left text-gray-800 font-poppins text-md font-bold cursor-pointer"
           >
-            <HiPlus size={20} />
-            <span className="font-bold font-sans">New Chat</span>
+            <HiPlus size={22} />
+            <span className="mt-1 font-extrabold">NEW CHAT</span>
           </button>
         </div>
 
         <div className="flex-1 overflow-hidden">
-          <div
-            className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 
-                        scrollbar-track-transparent hover:scrollbar-thumb-gray-500"
-          >
-            <div className="px-4 pb-4 space-y-2">
+          <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-500">
+            <div className="px-4 py-3 space-y-6">
               {conversations?.map((conversation) => (
                 <div
                   key={conversation?.pk}
                   className={`
                     group flex items-center gap-3 p-3 cursor-pointer 
-                    transition-all duration-200 hover:bg-gray-500 font-sans font-light
+                    transition-all duration-600 hover:bg-gray-200 font-poppins font-light
                     ${
                       activeConversation === conversation?.pk
-                        ? "bg-gray-700 border-l-4 border-gray-200"
-                        : "hover:bg-gray-700"
+                        ? "border-l-2 border-gray-800"
+                        : "hover:bg-gray-200"
                     }
                   `}
                   onClick={() => onSelectConversation(conversation?.pk)}
                 >
                   <HiChatBubbleLeftRight
                     key={conversations?.pk}
-                    size={18}
-                    className="text-gray-400 flex-shrink-0"
+                    size={22}
+                    className="text-gray-800 flex-shrink-0"
                   />
 
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-200 truncate">
+                    <p className="text-md font-semibold text-gray-800 truncate">
                       {conversation?.fields?.title}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-gray-600 mt-1">
                       {moment(
                         new Date(conversation?.fields?.updated_at)
                       ).fromNow()}
@@ -85,12 +76,11 @@ export default function ChatSidebar({
                       e.preventDefault();
                       onDeleteConversation(conversation?.pk);
                     }}
-                    className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-600 
-                             rounded transition-all duration-200 flex-shrink-0"
+                    className="p-1 transition-all duration-600"
                   >
                     <HiTrash
-                      size={16}
-                      className="text-gray-400 hover:text-red-400"
+                      size={20}
+                      className="text-gray-800 transition-all cursor-pointer duration-600 hover:text-red-600"
                     />
                   </button>
                 </div>
@@ -99,7 +89,7 @@ export default function ChatSidebar({
           </div>
         </div>
 
-        <div className="p-4 border-t border-gray-700">
+        <div className="p-4">
           <div className="text-center text-xs text-gray-400">
             AI Assistant v1.0
           </div>

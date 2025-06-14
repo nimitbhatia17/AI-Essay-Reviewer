@@ -5,9 +5,7 @@ import {
   useGetChatsByConversationQuery,
   useInsertChatMutation,
 } from "@/redux/features/chatApiSlice";
-import { HiOutlineBars3, HiPaperAirplane, HiStop } from "react-icons/hi2";
-import { HiUser } from "react-icons/hi";
-import { RiRobot2Line } from "react-icons/ri";
+import { HiPaperAirplane, HiStop } from "react-icons/hi2";
 import { toast } from "react-toastify";
 
 export default function ChatArea({ onToggleSidebar, activeConversation }) {
@@ -15,7 +13,7 @@ export default function ChatArea({ onToggleSidebar, activeConversation }) {
     useGetChatsByConversationQuery(activeConversation);
   const [insertChat, { isLoading: isTyping }] = useInsertChatMutation();
   const [inputValue, setInputValue] = useState("");
-  const [userMessage, setUserMessage] = useState({});
+  const [userMessage, setUserMessage] = useState("");
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -24,6 +22,7 @@ export default function ChatArea({ onToggleSidebar, activeConversation }) {
   };
 
   useEffect(() => {
+    setUserMessage("");
     scrollToBottom();
   }, [messages]);
 
@@ -45,7 +44,9 @@ export default function ChatArea({ onToggleSidebar, activeConversation }) {
     setInputValue("");
     insertChat({ conversation_id, prompt })
       .unwrap()
-      .then(() => refetch())
+      .then(() => {
+        refetch().then(() => setUserMessage(""));
+      })
       .catch(() => toast.error("failed to connect to AI"));
   }
 
@@ -69,141 +70,137 @@ export default function ChatArea({ onToggleSidebar, activeConversation }) {
   }, [inputValue]);
 
   return (
-    <div className="flex flex-col h-full bg-gray-200 font-sans">
-      <div className="flex items-center justify-between p-4 border-b border-gray-900 bg-gray-900 font-sans">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onToggleSidebar}
-            className="lg:hidden p-2 hover:bg-gray-900 rounded-lg transition-colors"
-          >
-            <HiOutlineBars3 size={20} />
-          </button>
-          <h1 className="text-sm py-1 font-extrabold text-gray-200">
-            AI ASSISTANT
-          </h1>
-        </div>
-        <div className="text-sm text-gray-400">
-          Conversation #{activeConversation}
-        </div>
-      </div>
-
-      {/* Messages Area */}
+    <div className="flex flex-col h-full font-poppins">
       <div className="flex-1 overflow-hidden mt-4">
         <div
-          className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 
+          className="mx-40 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 
                       scrollbar-track-transparent hover:scrollbar-thumb-gray-500"
         >
-          <div className="max-w-4xl mx-auto p-4 space-y-6">
-            {messages?.map((message) => (
-              <div
-                key={message.pk}
-                className={`flex gap-4 ${
-                  message.fields?.is_ai ? "justify-start" : "justify-end"
-                }`}
-              >
-                {message.fields?.is_ai && (
-                  <div className="flex-shrink-0 w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
-                    <RiRobot2Line size={18} className="text-gray-100" />
-                  </div>
-                )}
+          {!activeConversation && (
+            <div className="z-100 justify-center items-center flex flex-col h-full space-y-4 text-gray-300 text-lg">
+              Start a new Conversation
+            </div>
+          )}
 
+          {activeConversation && (
+            <div className="w-full mx-auto space-y-6 text-lg">
+              {messages?.map((message) => (
                 <div
-                  className={`
-                  max-w-3xl px-4 py-3 rounded-lg
+                  key={message.pk}
+                  className={`flex gap-4 ${
+                    message.fields?.is_ai ? "justify-start" : "justify-end"
+                  }`}
+                >
+                  <div
+                    className={`px-4 py-4 rounded-lg
                   ${
                     !message.fields?.is_ai
-                      ? "bg-gray-100 text-gray-900 rounded-br-xs"
-                      : "bg-gray-900 text-gray-100 rounded-bl-xs"
+                      ? "bg-gray-100 text-gray-800"
+                      : "text-gray-800"
                   }
                 `}
-                >
-                  <p className="whitespace-pre-wrap break-words">
-                    {message.fields?.text}
-                  </p>
-                  <div
-                    className={`
+                  >
+                    <p className="whitespace-pre-wrap break-words">
+                      {message.fields?.text}
+                    </p>
+                    <div
+                      className={`
                     text-xs mt-2 opacity-70
                     ${
-                      !message.fields?.is_ai ? "text-gray-700" : "text-gray-300"
+                      !message.fields?.is_ai ? "text-gray-500" : "text-gray-500"
                     }
                   `}
-                  >
-                    {new Date(message.fields?.created_at).toLocaleTimeString()}
+                    >
+                      {new Date(
+                        message.fields?.created_at
+                      ).toLocaleTimeString()}
+                    </div>
                   </div>
                 </div>
+              ))}
 
-                {!message.fields?.is_ai && (
-                  <div className="flex-shrink-0 w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
-                    <HiUser size={18} className="text-gray-100" />
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {isTyping && (
-              <div className="flex gap-4 justify-start">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center">
-                  <RiRobot2Line size={18} className="text-white" />
-                </div>
-                <div className="bg-gray-700 text-white px-4 py-3 rounded-2xl rounded-bl-sm">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: "0.1s" }}
-                    ></div>
-                    <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: "0.2s" }}
-                    ></div>
+              {userMessage && (
+                <div key="userMessage" className="flex gap-4 justify-end">
+                  <div className="bg-gray-100 text-gray-800 px-4 py-4 rounded-lg">
+                    <p className="whitespace-pre-wrap break-words">
+                      {userMessage.content}
+                    </p>
+                    <div className="text-xs mt-2 opacity-70 text-gray-500">
+                      {new Date(userMessage.timestamp).toLocaleTimeString()}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <div ref={messagesEndRef} />
-          </div>
+              {isTyping && (
+                <div className="flex gap-4 justify-start">
+                  <div className="bg-gray-200 text-gray-800 px-4 py-3 rounded-2xl rounded-bl-sm">
+                    <div className="flex space-x-1">
+                      <div className="w-1 h-1 bg-gray-800 rounded-full animate-bounce"></div>
+                      <div
+                        className="w-1 h-1 bg-gray-800 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.1s" }}
+                      ></div>
+                      <div
+                        className="w-1 h-1 bg-gray-800 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.2s" }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="border-t border-gray-700 bg-gray-900 p-4 px-6">
-        <form onSubmit={handleSubmit} className="mx-auto">
-          <div className="relative flex items-end gap-3 bg-gray-700 p-3">
-            <textarea
-              ref={textareaRef}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={
-                isTyping ? "AI is thinking..." : "Type your message..."
-              }
-              disabled={isTyping}
-              className="flex-1 bg-transparent text-gray-100 placeholder-gray-400 
-                       resize-none outline-none min-h-[24px] max-h-[200px] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent"
-              rows="1"
-            />
+      {activeConversation && (
+        <>
+          <div className="bg-gray-100 lg:mx-40 rounded-md border-1 border-gray-300">
+            <form onSubmit={handleSubmit} className="mx-auto">
+              <div className="relative flex items-center gap-3 p-3">
+                <textarea
+                  ref={textareaRef}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={isTyping ? "AI is thinking..." : "Ask anything"}
+                  disabled={isTyping}
+                  className="flex-1 bg-transparent text-gray-800 placeholder-gray-400 text-lg p-3 font-medium
+                       resize-none outline-none min-h-[24px] max-h-[200px] scrollbar-thin scrollbar-thumb-gray-500 
+                       scrollbar-track-transparent"
+                  rows="1"
+                />
 
-            <button
-              type="submit"
-              disabled={!inputValue.trim() || isTyping}
-              className={`
-                flex-shrink-0 p-2 rounded-xl transition-all duration-200
+                <button
+                  type="submit"
+                  disabled={!inputValue.trim() || isTyping}
+                  className={`
+                p-2 rounded-md transition-all duration-600
                 ${
                   !inputValue.trim() || isTyping
-                    ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                    ? "bg-gray-300 text-gray-200 cursor-not-allowed"
                     : "bg-gray-900 text-white hover:bg-gray-700 transform active:scale-95"
                 }
               `}
-            >
-              {isTyping ? <HiStop size={20} /> : <HiPaperAirplane size={20} />}
-            </button>
+                >
+                  {isTyping ? (
+                    <HiStop size={26} />
+                  ) : (
+                    <HiPaperAirplane size={26} />
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
-
-          <div className="text-xs text-gray-400 text-center mt-2">
-            Press Enter to send, Shift+Enter for new line
+          <div className="text-xs text-gray-400 text-center p-2 font-poppins">
+            MBA Assistant can make mistakes. Check important info. (Press Enter
+            to send, Shift+Enter for new line)
           </div>
-        </form>
-      </div>
+        </>
+      )}
     </div>
   );
 }

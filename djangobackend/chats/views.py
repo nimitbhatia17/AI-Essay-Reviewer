@@ -13,6 +13,8 @@ class GetChatsByConversation(APIView):
     def get(self, request, *args, **kwargs):
         conversation_uuid = uri_to_iri(
             request.GET.get("conversation_id", None)).strip()
+        if not conversation_uuid:
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
         conversation_object = Conversation.objects.filter(id=conversation_uuid)[
             0]
@@ -30,14 +32,28 @@ class InsertChatToConversation(APIView):
 
         conversation_object = Conversation.objects.filter(id=conversation_uuid)[
             0]
+        response_id = conversation_object.context_response_id
 
         user_chat_object = Chat(
             text=chat_prompt, conversation=conversation_object, is_ai=False, previous_output_id="")
         user_chat_object.save()
 
-        ai_response = get_ai_response(chat_prompt)
+        ai_response, response_id = get_ai_response(chat_prompt, response_id)
         ai_chat_object = Chat(
             text=ai_response, conversation=conversation_object, is_ai=True, previous_output_id="")
         ai_chat_object.save()
+        conversation_object.context_response_id = response_id
+
+        chat_counts = len(Chat.objects.filter(
+            conversation=conversation_object))
+        print(f"Chat counts: {chat_counts}")
+
+        if chat_counts == 3:
+            ai_response, response_id = get_ai_response(
+                "Give a suitable title for the conversation", response_id)
+            conversation_object.title = ai_response
+            conversation_object.context_response_id = response_id
+
+        conversation_object.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)

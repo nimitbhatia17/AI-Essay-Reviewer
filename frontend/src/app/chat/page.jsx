@@ -23,9 +23,7 @@ export default function Page() {
   const [deleteConversation] = useDeleteConversationMutation();
   const [createNewConversation] = useCreateNewConversationMutation();
 
-  const [activeConversation, setActiveConversation] = useState(
-    conversations ? conversations[0].fields?.pk : null
-  );
+  const [activeConversation, setActiveConversation] = useState(null);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -45,16 +43,16 @@ export default function Page() {
       .unwrap()
       .then(() => {
         toast.success("Conversation Deleted Successully!");
+        setActiveConversation(null);
         refetch();
       })
       .catch(() => {
         toast.error("Failed Delete");
       });
-    setActiveConversation(conversations ? conversations[0].fields?.pk : null);
   };
 
   return (
-    <div className="flex h-screen bg-gray-900 text-white overflow-hidden">
+    <div className="flex h-screen pt-30 overflow-hidden">
       <Sidebar
         isOpen={isSidebarOpen}
         onToggle={toggleSidebar}

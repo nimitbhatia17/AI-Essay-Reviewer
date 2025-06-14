@@ -1,10 +1,17 @@
 "use client";
 
 import useVerify from "@/app/hooks/use-verify";
-import { ToastContainer } from "react-toastify";
+import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Setup() {
   useVerify();
-  return <ToastContainer />;
+  return (
+    <ToastContainer
+      autoClose={2000}
+      transition={Slide}
+      pauseOnFocusLoss={false}
+      pauseOnHover={false}
+    />
+  );
 }

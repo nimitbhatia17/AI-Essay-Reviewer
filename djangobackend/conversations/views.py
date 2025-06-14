@@ -12,7 +12,7 @@ from django.utils.encoding import uri_to_iri
 class CreateANewConversation(APIView):
     def post(self, request, *args, **kwargs):
         user_email = request.data.get(
-            "user", "nimitbhatia17@gmail.com").strip()
+            "user").strip()
         if user_email is None or len(user_email) <= 0:
             return Response({"error": "No User Email found in request please try again..."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -33,7 +33,7 @@ class CreateANewConversation(APIView):
 class FetchAllConversationsOfAUser(APIView):
     def get(self, request, *args, **kwargs):
         user_email = uri_to_iri(request.GET.get(
-            "user", "nimitbhatia17@gmail.com").strip())
+            "user").strip())
         if user_email is None or len(user_email) <= 0:
             return Response({"error": "No User Email found in request please try again..."}, status=status.HTTP_404_NOT_FOUND)
         print(user_email)

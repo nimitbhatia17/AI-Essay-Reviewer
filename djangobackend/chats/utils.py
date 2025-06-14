@@ -5,7 +5,7 @@ from openai import OpenAI
 import pandas as pd
 
 
-def get_ai_response(user_prompt):
+def get_ai_response(user_prompt, response_id):
     # Build paths inside the project like this: BASE_DIR / 'subdir'.
     BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -79,6 +79,20 @@ def get_ai_response(user_prompt):
 
     Remember: Accuracy and honesty are paramount. It's better to acknowledge uncertainty than to provide potentially incorrect information.
     """
+    if response_id:
+        response = CLIENT.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_prompt}
+            ],
+            # previous_response_id=response_id,
+            temperature=OPENAI_TEMPERATURE,
+            max_completion_tokens=1500,
+            store=True
+        )
+        return response.choices[0].message.content, response.id
+
     response = CLIENT.chat.completions.create(
         model=OPENAI_MODEL,
         messages=[
@@ -89,4 +103,4 @@ def get_ai_response(user_prompt):
         max_completion_tokens=1500,
         store=True
     )
-    return response.choices[0].message.content
+    return response.choices[0].message.content, response.id
